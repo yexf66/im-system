@@ -19,11 +19,15 @@ import org.slf4j.LoggerFactory;
 public class ImWebsocketServer {
     private final static Logger logger = LoggerFactory.getLogger(ImWebsocketServer.class);
 
+    private final BootstrapConfig.AppConfig appConfig;
+    private final ServerBootstrap server;
+
     public ImWebsocketServer(BootstrapConfig.AppConfig appConfig) {
+        this.appConfig = appConfig;
         EventLoopGroup mainGroup = new NioEventLoopGroup();
         EventLoopGroup subGroup = new NioEventLoopGroup();
 
-        ServerBootstrap server = new ServerBootstrap();
+        server = new ServerBootstrap();
         server.group(mainGroup, subGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 10240) // 服务端可连接队列大小
@@ -54,7 +58,12 @@ public class ImWebsocketServer {
 
                     }
                 });
+    }
+
+
+    public void start() {
         server.bind(appConfig.getWebSocketPort());
         logger.info("ImWebsocketServer started on port:" + appConfig.getWebSocketPort());
+
     }
 }

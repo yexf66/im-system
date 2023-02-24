@@ -18,8 +18,8 @@ public class Starter {
             Yaml yaml = new Yaml();
             InputStream inputStream = Starter.class.getResourceAsStream("/config.yaml");
             BootstrapConfig bootstrapConfig = yaml.loadAs(inputStream, BootstrapConfig.class);
-            new ImServer(bootstrapConfig.getApp());
-            new ImWebsocketServer(bootstrapConfig.getApp());
+            new ImServer(bootstrapConfig.getApp()).start();
+            new ImWebsocketServer(bootstrapConfig.getApp()).start();
         } catch (Exception e) {
             logger.error("IM 服务启动失败", e);
             System.exit(500);

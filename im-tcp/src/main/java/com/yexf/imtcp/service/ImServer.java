@@ -15,13 +15,16 @@ import org.slf4j.LoggerFactory;
 
 public class ImServer {
     private final static Logger logger = LoggerFactory.getLogger(ImServer.class);
+    private final BootstrapConfig.AppConfig appConfig;
+    private final ServerBootstrap server;
 
 
     public ImServer(BootstrapConfig.AppConfig appConfig) {
+        this.appConfig = appConfig;
         EventLoopGroup mainGroup = new NioEventLoopGroup();
         EventLoopGroup subGroup = new NioEventLoopGroup();
 
-        ServerBootstrap server = new ServerBootstrap();
+        server = new ServerBootstrap();
         server.group(mainGroup, subGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 10240) // 服务端可连接队列大小
@@ -35,8 +38,12 @@ public class ImServer {
                         ch.pipeline().addLast(new NettyServerHandler());
                     }
                 });
+    }
+
+    public void start() {
         server.bind(appConfig.getTcpPort());
         logger.info("ImServer started on port:" + appConfig.getTcpPort());
+
     }
 
 
