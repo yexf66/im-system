@@ -1,6 +1,7 @@
 package com.yexf.imtcp;
 
 import com.yexf.imtcp.config.BootstrapConfig;
+import com.yexf.imtcp.redis.RedisManager;
 import com.yexf.imtcp.service.ImServer;
 import com.yexf.imtcp.service.ImWebsocketServer;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ public class Starter {
             BootstrapConfig bootstrapConfig = yaml.loadAs(inputStream, BootstrapConfig.class);
             new ImServer(bootstrapConfig.getApp()).start();
             new ImWebsocketServer(bootstrapConfig.getApp()).start();
+            RedisManager.init(bootstrapConfig);
         } catch (Exception e) {
             logger.error("IM 服务启动失败", e);
             System.exit(500);
