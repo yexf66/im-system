@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yexf.imcodec.pack.LoginPack;
 import com.yexf.imcodec.proto.Message;
+import com.yexf.imcommon.constants.Constants;
 import com.yexf.imcommon.constants.RedisConstants;
 import com.yexf.imcommon.enums.ImConnectStatusEnum;
 import com.yexf.imcommon.enums.command.SystemCommand;
@@ -25,21 +26,29 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
         Integer command = message.getMessageHeader().getCommand();
         if (command == SystemCommand.LOGIN.getCommand()) {
             LoginPack loginPack = JSON.toJavaObject((JSONObject) message.getMessagePack(), LoginPack.class);
-            System.out.println(loginPack);
             String userId = loginPack.getUserId();
-            ctx.channel().attr(AttributeKey.valueOf("userId")).set(userId);//为channel设置用户id属性
             Integer appId = message.getMessageHeader().getAppId();
-
+            Integer clientType = message.getMessageHeader().getClientType();
+            //为channel设置属性
+            ctx.channel().attr(AttributeKey.valueOf(Constants.USER_ID)).set(userId);
+            ctx.channel().attr(AttributeKey.valueOf(Constants.APP_ID)).set(appId);
+            ctx.channel().attr(AttributeKey.valueOf(Constants.CLIENT_TYPE)).set(clientType);
+//            ctx.channel().attr(AttributeKey.valueOf(Constants.LAST_PING_TIME)).set(System.currentTimeMillis());
             UserSession userSession = new UserSession();
             userSession.setUserId(userId);
             userSession.setAppId(appId);
-            userSession.setClientType(message.getMessageHeader().getClientType());
+            userSession.setClientType(clientType);
             userSession.setVersion(message.getMessageHeader().getVersion());
             userSession.setConnectState(ImConnectStatusEnum.ONLINE.getCode());
             RedissonClient redissonClient = RedisManager.getRedissonClient();
-            RMap<String, String> map = redissonClient.getMap(String.format(RedisConstants.USER_SESSION, userId, appId));
-            map.put(message.getMessageHeader().getClientType() + "", JSONObject.toJSONString(userSession));
-            SessionSocketHolder.put(userId, (NioSocketChannel) ctx.channel());//存储channel
+            RMap<String, String> map = redissonClient.getMap(String.format(RedisConstants.USER_SESSION, appId, userId));
+            map.put(clientType.toString(), JSONObject.toJSONString(userSession));
+            SessionSocketHolder.put(appId, userId, clientType, (NioSocketChannel) ctx.channel());//存储channel
+        } else if (command == SystemCommand.LOGOUT.getCommand()) {
+            SessionSocketHolder.removeUserSession((NioSocketChannel) ctx.channel());
+        } else if (command == SystemCommand.PING.getCommand()) {
+            //往channel 里面设置上次ping 的时间
+            ctx.channel().attr(AttributeKey.valueOf(Constants.LAST_PING_TIME)).set(System.currentTimeMillis());
         }
     }
 }

@@ -2,6 +2,7 @@ package com.yexf.imtcp.service;
 
 import com.yexf.imcodec.MessageDecoder;
 import com.yexf.imtcp.config.BootstrapConfig;
+import com.yexf.imtcp.handler.HeartBeatHandler;
 import com.yexf.imtcp.handler.NettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -10,6 +11,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +38,10 @@ public class ImServer {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline().addLast(new MessageDecoder());
                         ch.pipeline().addLast(new NettyServerHandler());
+                        ch.pipeline().addLast(new IdleStateHandler(
+                                0, 0,
+                                20));
+                        ch.pipeline().addLast(new HeartBeatHandler(appConfig.getHeartBeatTimeout()));
                     }
                 });
     }
@@ -43,7 +49,6 @@ public class ImServer {
     public void start() {
         server.bind(appConfig.getTcpPort());
         logger.info("ImServer started on port:" + appConfig.getTcpPort());
-
     }
 
 

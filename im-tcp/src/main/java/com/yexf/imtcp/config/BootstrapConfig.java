@@ -17,6 +17,7 @@ public class BootstrapConfig {
         private Integer bossThreadSize;
         private Integer workThreadSize;
         private Integer loginModel;
+        private Integer heartBeatTimeout;//心跳超时时间（毫秒）
 
         /**
          * redis配置
