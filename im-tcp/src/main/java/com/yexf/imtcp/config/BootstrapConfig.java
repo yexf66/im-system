@@ -23,6 +23,11 @@ public class BootstrapConfig {
          * redis配置
          */
         private RedisConfig redis;
+
+        /**
+         * rabbitMQ 配置
+         */
+        private RabbitMqConfig rabbitmq;
     }
 
     @Data
@@ -81,4 +86,15 @@ public class BootstrapConfig {
         private String address;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RabbitMqConfig {
+        private String host;
+        private Integer port;
+        private String virtualHost;
+        private String userName;
+        private String password;
+    }
 }

@@ -6,7 +6,7 @@ import com.yexf.imcommon.constants.RedisConstants;
 import com.yexf.imcommon.enums.ImConnectStatusEnum;
 import com.yexf.imcommon.model.UserClientDTO;
 import com.yexf.imcommon.model.UserSession;
-import com.yexf.imtcp.redis.RedisManager;
+import com.yexf.imtcp.config.redis.RedisManager;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import org.apache.commons.lang3.StringUtils;

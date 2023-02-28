@@ -9,7 +9,7 @@ import com.yexf.imcommon.constants.RedisConstants;
 import com.yexf.imcommon.enums.ImConnectStatusEnum;
 import com.yexf.imcommon.enums.command.SystemCommand;
 import com.yexf.imcommon.model.UserSession;
-import com.yexf.imtcp.redis.RedisManager;
+import com.yexf.imtcp.config.redis.RedisManager;
 import com.yexf.imtcp.utils.SessionSocketHolder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

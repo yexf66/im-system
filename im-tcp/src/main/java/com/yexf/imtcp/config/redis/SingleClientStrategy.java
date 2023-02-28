@@ -1,4 +1,4 @@
-package com.yexf.imtcp.redis;
+package com.yexf.imtcp.config.redis;
 
 
 import com.yexf.imtcp.config.BootstrapConfig;
