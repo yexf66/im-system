@@ -28,6 +28,11 @@ public class BootstrapConfig {
          * rabbitMQ 配置
          */
         private RabbitMqConfig rabbitmq;
+
+        /**
+         * zookeeper 配置
+         */
+        private ZookeeperConfig zookeeper;
     }
 
     @Data
@@ -96,5 +101,15 @@ public class BootstrapConfig {
         private String virtualHost;
         private String userName;
         private String password;
+    }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ZookeeperConfig {
+        private String zkAddr;
+        private Integer zkConnectTimeOut;
     }
 }

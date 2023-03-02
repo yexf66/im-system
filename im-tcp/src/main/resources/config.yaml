@@ -21,3 +21,6 @@ app:
     virtualHost: /
     userName: admin
     password: admin
+  zookeeper:
+    zkAddr: 192.168.172.135:2181
+    zkConnectTimeOut: 20000

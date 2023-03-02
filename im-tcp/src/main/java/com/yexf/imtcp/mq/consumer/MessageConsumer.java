@@ -17,7 +17,7 @@ public class MessageConsumer {
             Channel channel = MQFactory.getChannel(queueName);
             channel.queueDeclare(queueName, true, false, false, null);
             channel.queueBind(queueName, queueName, "");
-            channel.basicConsume(queueName, false, new DefaultConsumer(channel) {
+            channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     //todo 處理消息服務發來的消息

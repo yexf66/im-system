@@ -2,15 +2,20 @@ package com.yexf.imtcp;
 
 import com.yexf.imtcp.config.BootstrapConfig;
 import com.yexf.imtcp.config.redis.RedisManager;
+import com.yexf.imtcp.config.zookeeper.ZKRegistry;
+import com.yexf.imtcp.config.zookeeper.ZKit;
 import com.yexf.imtcp.mq.consumer.MessageConsumer;
 import com.yexf.imtcp.service.ImServer;
 import com.yexf.imtcp.service.ImWebsocketServer;
 import com.yexf.imtcp.config.mq.MQFactory;
+import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class Starter {
 
@@ -26,10 +31,24 @@ public class Starter {
             RedisManager.init(bootstrapConfig);//init Redis
             MQFactory.init(bootstrapConfig.getApp().getRabbitmq());//init rabbitMQ
             MessageConsumer.init();
+            registerZK(bootstrapConfig);
         } catch (Exception e) {
             logger.error("IM 服务启动失败", e);
             System.exit(500);
         }
 
+    }
+
+    public static void registerZK(BootstrapConfig config) throws UnknownHostException {
+
+        String hostAddress = InetAddress.getLocalHost().getHostAddress();
+        System.out.println(config.getApp().getZookeeper().getZkAddr());
+        System.out.println(config.getApp().getZookeeper().getZkConnectTimeOut().toString());
+        ZkClient zkClient = new ZkClient(config.getApp().getZookeeper().getZkAddr(),
+                config.getApp().getZookeeper().getZkConnectTimeOut());
+        ZKit zKit = new ZKit(zkClient);
+        ZKRegistry registryZK = new ZKRegistry(zKit, hostAddress, config.getApp());
+        Thread thread = new Thread(registryZK);
+        thread.start();
     }
 }
