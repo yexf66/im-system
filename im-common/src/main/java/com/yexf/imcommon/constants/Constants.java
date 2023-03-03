@@ -1,5 +1,8 @@
 package com.yexf.imcommon.constants;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Constants {
     public static final String USER_ID = "userId";
     public static final String APP_ID = "appId";
@@ -11,4 +14,5 @@ public class Constants {
     public static final String CLIENT_IMEI = "clientImei";
     public static final String LAST_PING_TIME = "last_ping_TIME";
 
+    public static Map<String, String> cache = new ConcurrentHashMap<>();
 }

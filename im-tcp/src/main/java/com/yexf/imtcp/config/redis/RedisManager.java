@@ -2,6 +2,7 @@ package com.yexf.imtcp.config.redis;
 
 
 import com.yexf.imtcp.config.BootstrapConfig;
+import com.yexf.imtcp.listener.UserLoginMessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 
@@ -13,14 +14,11 @@ public class RedisManager {
 
     private static RedissonClient redissonClient;
 
-//    private static Integer loginModel;
-
     public static void init(BootstrapConfig config) {
-//        loginModel = config.getApp().getLoginModel();
         SingleClientStrategy singleClientStrategy = new SingleClientStrategy();
         redissonClient = singleClientStrategy.getRedissonClient(config.getApp().getRedis());
-//        UserLoginMessageListener userLoginMessageListener = new UserLoginMessageListener(loginModel);
-//        userLoginMessageListener.listenerUserLogin();
+        UserLoginMessageListener userLoginMessageListener = new UserLoginMessageListener(config.getApp().getLoginModel());
+        userLoginMessageListener.listen();
         log.info("Redis connect success");
     }
 

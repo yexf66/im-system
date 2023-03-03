@@ -4,19 +4,19 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import com.yexf.imcommon.constants.Constants;
 import com.yexf.imcommon.constants.MQConstants;
 import com.yexf.imtcp.config.mq.MQFactory;
 
 import java.io.IOException;
 
 public class MessageConsumer {
-
     public static void consume() {
         try {
-            String queueName = MQConstants.MessageService2Im;
+            String queueName = MQConstants.MessageService2Im + Constants.cache.get("nodeId");
             Channel channel = MQFactory.getChannel(queueName);
             channel.queueDeclare(queueName, true, false, false, null);
-            channel.queueBind(queueName, queueName, "");
+            channel.queueBind(queueName, MQConstants.MessageService2Im, Constants.cache.get("nodeId"));
             channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {

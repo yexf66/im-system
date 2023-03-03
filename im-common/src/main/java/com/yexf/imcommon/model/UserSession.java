@@ -21,4 +21,12 @@ public class UserSession {
      */
     private Integer connectState;
 
+    /**
+     * 服务启动时候设置每台服务的唯一id，用来记录用户在哪台机器上
+     */
+    private String nodeId;
+
+    private String nodeIp;
+
+
 }

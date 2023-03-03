@@ -12,6 +12,7 @@ public class BootstrapConfig {
 
     @Data
     public static class AppConfig {
+        private String nodeId;//节点id 唯一，且固定，每次启动都固定这个nodeId,当前应用为有状态服务
         private Integer tcpPort;
         private Integer webSocketPort;
         private Integer bossThreadSize;
